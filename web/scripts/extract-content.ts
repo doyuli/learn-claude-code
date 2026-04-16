@@ -15,12 +15,13 @@ const AGENTS_DIR = path.join(REPO_ROOT, "agents");
 const DOCS_DIR = path.join(REPO_ROOT, "docs");
 const OUT_DIR = path.join(WEB_DIR, "src", "data", "generated");
 
-// Map python filenames to version IDs
-// s01_agent_loop.py -> s01
+// Map agent filenames to version IDs
+// s01_agent_loop.py / s01_agent_loop.ts -> s01
 // s02_tools.py -> s02
 // s_full.py -> s_full (reference agent, typically skipped)
 function filenameToVersionId(filename: string): string | null {
-  const base = path.basename(filename, ".py");
+  const ext = path.extname(filename);
+  const base = path.basename(filename, ext);
   if (base === "s_full") return null;
   if (base === "__init__") return null;
 
@@ -138,10 +139,14 @@ function main() {
     return;
   }
 
-  // 1. Read all agent files
-  const agentFiles = fs
-    .readdirSync(AGENTS_DIR)
-    .filter((f) => f.startsWith("s") && f.endsWith(".py"));
+  // 1. Read all agent files — prefer .ts over .py for each version
+  const allAgentFiles = fs.readdirSync(AGENTS_DIR).filter((f) => f.startsWith("s"));
+  const tsFiles = new Set(allAgentFiles.filter((f) => f.endsWith(".ts")));
+  // Include .py files only when no corresponding .ts exists
+  const agentFiles = [
+    ...Array.from(tsFiles),
+    ...allAgentFiles.filter((f) => f.endsWith(".py") && !tsFiles.has(f.replace(/\.py$/, ".ts"))),
+  ].sort();
 
   console.log(`  Found ${agentFiles.length} agent files`);
 
@@ -157,12 +162,14 @@ function main() {
     const filePath = path.join(AGENTS_DIR, filename);
     const source = fs.readFileSync(filePath, "utf-8");
     const lines = source.split("\n");
+    // Strip shebang line for cleaner display
+    const displayLines = lines[0]?.startsWith("#!") ? lines.slice(1) : lines;
 
     const meta = VERSION_META[versionId];
-    const classes = extractClasses(lines);
-    const functions = extractFunctions(lines);
+    const classes = extractClasses(displayLines);
+    const functions = extractFunctions(displayLines);
     const tools = extractTools(source);
-    const loc = countLoc(lines);
+    const loc = countLoc(displayLines);
 
     versions.push({
       id: versionId,
@@ -177,7 +184,7 @@ function main() {
       classes,
       functions,
       layer: meta?.layer ?? "core",
-      source,
+      source: displayLines.join("\n"),
     });
   }
 

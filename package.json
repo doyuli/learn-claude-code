@@ -1,0 +1,39 @@
+{
+  "name": "learn-claude-code",
+  "version": "1.0.0",
+  "description": "Agent tutorial examples in TypeScript",
+  "scripts": {
+    "s01": "npx ts-node agents/s01_agent_loop.ts",
+    "s02": "npx ts-node agents/s02_tool_use.ts",
+    "s03": "npx ts-node agents/s03_todo_write.ts",
+    "s04": "npx ts-node agents/s04_subagent.ts",
+    "s05": "npx ts-node agents/s05_skill_loading.ts",
+    "s06": "npx ts-node agents/s06_context_compact.ts",
+    "s07": "npx ts-node agents/s07_permission_system.ts",
+    "s08": "npx ts-node agents/s08_hook_system.ts",
+    "s09": "npx ts-node agents/s09_memory_system.ts",
+    "s10": "npx ts-node agents/s10_system_prompt.ts",
+    "s11": "npx ts-node agents/s11_error_recovery.ts",
+    "s12": "npx ts-node agents/s12_task_system.ts",
+    "s13": "npx ts-node agents/s13_background_tasks.ts",
+    "s14": "npx ts-node agents/s14_cron_scheduler.ts",
+    "s15": "npx ts-node agents/s15_agent_teams.ts",
+    "s16": "npx ts-node agents/s16_team_protocols.ts",
+    "s17": "npx ts-node agents/s17_autonomous_agents.ts",
+    "s18": "npx ts-node agents/s18_worktree_task_isolation.ts",
+    "s19": "npx ts-node agents/s19_mcp_plugin.ts",
+    "full": "npx ts-node agents/s_full.ts",
+    "typecheck": "npx tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@types/minimatch": "^5.1.2",
+    "dotenv": "^16.4.0",
+    "minimatch": "^10.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.0"
+  }
+}
